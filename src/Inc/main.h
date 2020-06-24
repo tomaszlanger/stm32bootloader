@@ -58,7 +58,7 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define DIR_MCU_Pin GPIO_PIN_4
+#define DIR_MCU_Pin GPIO_PIN_8
 #define DIR_MCU_GPIO_Port GPIOA
 #define PRE_CHG_COMM_Pin GPIO_PIN_8
 #define PRE_CHG_COMM_GPIO_Port GPIOB
