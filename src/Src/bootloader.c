@@ -201,7 +201,8 @@ static uint8_t executeCommand(uint8_t commandCode, uint8_t *data, uint32_t start
 			break;
 		case READ_BOOTLOADER_COMMAND:
 			if (hostAuthorized == True) {
-				flash_read(startAddress, data, dataLength); 
+				flash_read(startAddress, data, dataLength-1); 
+				data[dataLength-1] = 0xbb;
 				result = True;
 			}
 			break;
@@ -244,6 +245,7 @@ static uint16_t crcCalculation(uint16_t crc, uint8_t byte) {
 }
 
 static void sendData(uint8_t* data, uint16_t lenght) {
+HAL_Delay(5);
 	txDataInProgress = True;
 	TRANSMIT_DRIVER_ON;
 	HAL_UART_Transmit_IT(uartHandle, data, lenght);	
@@ -415,7 +417,7 @@ void bootloaderHandler(void) {
 		case READ_COMMAND_RECEIVE_LENGTH_PROTOCOL_STATE:
 			receiveResult = receiveData(COMMAND_LENGTH_LENGHT + CRC_LENGTH, INIT_CRC_FLAG | CALCULATE_CRC_FLAG);
 			if (receiveResult == VALID_RECEIVED_DATA_TYPE) {
-				segmentDataLength = transmitBuffer[0] + 1;
+				segmentDataLength = transmitBuffer[0] + 1 + 1;
 				executeCommand(READ_BOOTLOADER_COMMAND, transmitBuffer, memoryAddress, segmentDataLength);
 				sendConfirmation(ACK);
 				sendData(transmitBuffer, segmentDataLength);
